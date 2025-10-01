@@ -8,7 +8,7 @@ export const useAuth = create(
       details: null,
       setAuth: ({ token, details }) => set({ token, details }),
       clearAuth: () => set({ token: null, details: null }),
-      baseURL : 'http://localhost:3000/api/v1'
+      baseURL : 'https://bubbles-backend-pz43.onrender.com'
     }),
     { name: "auth-store" } // localStorage key
   )
