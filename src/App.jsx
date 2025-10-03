@@ -6,6 +6,7 @@ import './index.css'
 import WhyUsDetail from "./pages/WhyUsDetail.jsx";
 import AddWhyUs from "./components/AddWhyUs.js";
 import ServiceDetail from "./pages/ServiceDetail.jsx";
+import AddService from "./pages/AddService.jsx";
 export default function App() {
   return (
     <Routes>
@@ -22,6 +23,7 @@ export default function App() {
     // in your router
     <Route path="/whyus/:id" element={<WhyUsDetail />} />
     <Route path="/serviceDetail/:id" element={<ServiceDetail />} />
+    <Route path="/addService" element={<AddService />} />
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -65,7 +65,7 @@ export default function WhyUsCreate() {
               <div style={styles.previewHeader}>
                 <span style={styles.previewLabel}>Preview</span>
                 {!imgOk && (
-                  <span style={styles.previewError}>Couldn’t load image</span>
+                  <span style={styles.previewError}>Couldn't load image</span>
                 )}
               </div>
               <div style={styles.previewBox}>

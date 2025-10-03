@@ -1,14 +1,9 @@
-// ServiceDetail.jsx
-import { color } from "framer-motion";
-import React, { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-
-const baseURL =  "http://localhost:3000/api/v1";
-
-const ServiceDetail = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
+// AddService.jsx
+import axios from "axios";
+import React, { useMemo, useState } from "react";
+import { useAuth } from "../store/auth";
+import { useNavigate } from "react-router-dom";
+const AddService = () => {
   const [values, setValues] = useState({
     name: "",
     imageLink: "",
@@ -18,15 +13,12 @@ const ServiceDetail = () => {
     priceMid: "",
     priceLarge: "",
   });
-
+  const navigate = useNavigate();
   const [touched, setTouched] = useState({});
   const [imgOk, setImgOk] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [fetchError, setFetchError] = useState("");
   const [submitError, setSubmitError] = useState("");
-
-  // ---------- Validation ----------
+  const baseURL = useAuth((s)=>s.baseURL)
   const errors = useMemo(() => {
     const e = {};
     if (!values.name.trim()) e.name = "Required";
@@ -51,70 +43,6 @@ const ServiceDetail = () => {
 
   const isValid = Object.keys(errors).length === 0;
 
-  // ---------- Fetch existing service by id ----------
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
-    async function fetchService() {
-      try {
-        setFetchError("");
-        setLoading(true);
-
-        const url = `${baseURL}/fetch-service-by-id?id=${encodeURIComponent(
-          id || ""
-        )}`;
-
-        const res = await fetch(url, {
-          method: "GET",
-          signal: controller.signal,
-          headers: { "Content-Type": "application/json" },
-        });
-
-        if (!res.ok) {
-          throw new Error(`Request failed: ${res.status}`);
-        }
-
-        // Expecting payload like:
-        // { name, imageLink, serviceID, location, prices: { small, mid, large } }
-        const payload = await res.json();
-        console.log(payload)
-        if (!isMounted) return;
-
-        setValues({
-          name: payload?.name ?? "",
-          imageLink: payload?.image?? "",
-          serviceID: payload?.serviceID ?? "",
-          location: payload?.location ?? "",
-          priceSmall:
-            payload?.prices?.small !== undefined ? String(payload.prices.small) : "",
-          priceMid:
-            payload?.prices?.mid !== undefined ? String(payload.prices.mid) : "",
-          priceLarge:
-            payload?.prices?.large !== undefined ? String(payload.prices.large) : "",
-        });
-
-        // reset preview state for new image
-        setImgOk(false);
-        // mark untouched on initial load
-        setTouched({});
-      } catch (err) {
-        if (err.name !== "AbortError") {
-          setFetchError(err.message || "Failed to fetch service.");
-        }
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-
-    fetchService();
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [id]);
-
-  // ---------- Handlers ----------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -126,7 +54,7 @@ const ServiceDetail = () => {
   };
 
   const handleSave = async () => {
-    // mark all fields as touched
+    // mark everything as touched so errors show
     setTouched({
       name: true,
       imageLink: true,
@@ -142,10 +70,9 @@ const ServiceDetail = () => {
 
     try {
       setSaving(true);
-
       const payload = {
         name: values.name.trim(),
-        imageLink: values.imageLink.trim(),
+        image: values.imageLink.trim(),
         serviceID: values.serviceID.trim(),
         location: values.location.trim(),
         prices: {
@@ -155,18 +82,16 @@ const ServiceDetail = () => {
         },
       };
 
-      // TODO: Replace with your real API endpoint to update the service
-      // Example:
-      // const res = await fetch(`${baseURL}/update-service-by-id/${id}`, {
-      //   method: "PUT",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(payload),
-      // });
-      // if (!res.ok) throw new Error(`Update failed: ${res.status}`);
-      console.log("Saving updated service:", { id, payload });
-      alert("Changes saved! (Check console for payload)");
+      // TODO: replace this with your API call
+      // await api.createService(payload)
+      console.log("Saving service payload:", payload);
+      const response = await axios.post(`${baseURL}/add-app-service` , {...payload})
+      if(response.status == 200){alert("Service added Successfully") ;navigate(`/home`)}
+      else {
+        alert(response.data.message)
+      }
     } catch (err) {
-      setSubmitError(err?.message || "Something went wrong while saving.");
+      setSubmitError(err?.message || "Something went wrong.");
     } finally {
       setSaving(false);
     }
@@ -174,70 +99,21 @@ const ServiceDetail = () => {
 
   const showError = (key) => touched[key] && errors[key];
 
-  // ---------- UI ----------
-  if (loading) {
-    return (
-      <div style={styles.page}>
-        <div style={styles.card}>
-          <div style={styles.skeletonTitle} />
-          <div style={{ height: 16 }} />
-          <div style={styles.grid}>
-            <div>
-              {[...Array(6)].map((_, i) => (
-                <div key={i} style={{ marginBottom: 14 }}>
-                  <div style={styles.skeletonLabel} />
-                  <div style={styles.skeletonInput} />
-                </div>
-              ))}
-            </div>
-            <div>
-              <div style={{ ...styles.previewCard, padding: 14 }}>
-                <div style={styles.skeletonLabel} />
-                <div style={styles.skeletonPreview} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (fetchError) {
-    return (
-      <div style={styles.page}>
-        <div style={styles.card}>
-          <h1 style={styles.title}>Service Details</h1>
-          <div style={styles.submitError}>
-            Error loading service: {fetchError}
-          </div>
-          <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-            <button style={styles.button} onClick={() => navigate(-1)}>Go Back</button>
-            <button
-              style={styles.buttonSecondary}
-              onClick={() => window.location.reload()}
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <h1 style={styles.title}>Service Details</h1>
-        <p style={styles.subtitle}>
-          ID: <span style={{ fontWeight: 600 }}>{id}</span>
-        </p>
+        <h1 style={styles.title}>Add New Service</h1>
+        <p style={styles.subtitle}>Fill in the details and click Save.</p>
 
         <div style={styles.grid}>
-          {/* Left column — editable fields */}
+          {/* Left column — form */}
           <div>
             <Field label="Name" required error={showError("name")}>
               <input
-                style={{ ...styles.input, ...(showError("name") ? styles.inputError : {}) }}
+                style={{
+                  ...styles.input,
+                  ...(showError("name") ? styles.inputError : {}),
+                }}
                 type="text"
                 name="name"
                 placeholder="e.g., Premium Wash"
@@ -250,11 +126,14 @@ const ServiceDetail = () => {
             <Field
               label="Image link"
               required
-              hint="Direct URL to an image (JPG/PNG/WebP)."
+              hint="Paste a direct image URL (JPG/PNG/WebP)."
               error={showError("imageLink")}
             >
               <input
-                style={{ ...styles.input, ...(showError("imageLink") ? styles.inputError : {}) }}
+                style={{
+                  ...styles.input,
+                  ...(showError("imageLink") ? styles.inputError : {}),
+                }}
                 type="url"
                 name="imageLink"
                 placeholder="https://example.com/image.jpg"
@@ -269,7 +148,10 @@ const ServiceDetail = () => {
 
             <Field label="Service ID" required error={showError("serviceID")}>
               <input
-                style={{ ...styles.input, ...(showError("serviceID") ? styles.inputError : {}) }}
+                style={{
+                  ...styles.input,
+                  ...(showError("serviceID") ? styles.inputError : {}),
+                }}
                 type="text"
                 name="serviceID"
                 placeholder="e.g., SRV-00123"
@@ -281,7 +163,10 @@ const ServiceDetail = () => {
 
             <Field label="Location" required error={showError("location")}>
               <input
-                style={{ ...styles.input, ...(showError("location") ? styles.inputError : {}) }}
+                style={{
+                  ...styles.input,
+                  ...(showError("location") ? styles.inputError : {}),
+                }}
                 type="text"
                 name="location"
                 placeholder="e.g., Mumbai, Andheri"
@@ -295,7 +180,10 @@ const ServiceDetail = () => {
             <div style={styles.priceRow}>
               <Field compact label="Small" required error={showError("priceSmall")}>
                 <input
-                  style={{ ...styles.input, ...(showError("priceSmall") ? styles.inputError : {}) }}
+                  style={{
+                    ...styles.input,
+                    ...(showError("priceSmall") ? styles.inputError : {}),
+                  }}
                   type="number"
                   min="0"
                   step="0.01"
@@ -306,10 +194,12 @@ const ServiceDetail = () => {
                   onBlur={handleBlur}
                 />
               </Field>
-
               <Field compact label="Mid" required error={showError("priceMid")}>
                 <input
-                  style={{ ...styles.input, ...(showError("priceMid") ? styles.inputError : {}) }}
+                  style={{
+                    ...styles.input,
+                    ...(showError("priceMid") ? styles.inputError : {}),
+                  }}
                   type="number"
                   min="0"
                   step="0.01"
@@ -320,10 +210,12 @@ const ServiceDetail = () => {
                   onBlur={handleBlur}
                 />
               </Field>
-
               <Field compact label="Large" required error={showError("priceLarge")}>
                 <input
-                  style={{ ...styles.input, ...(showError("priceLarge") ? styles.inputError : {}) }}
+                  style={{
+                    ...styles.input,
+                    ...(showError("priceLarge") ? styles.inputError : {}),
+                  }}
                   type="number"
                   min="0"
                   step="0.01"
@@ -349,14 +241,7 @@ const ServiceDetail = () => {
                 disabled={saving}
                 style={{ ...styles.button, ...(saving ? styles.buttonDisabled : {}) }}
               >
-                {saving ? "Saving…" : "Save Changes"}
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                style={styles.buttonSecondary}
-              >
-                Cancel
+                {saving ? "Saving…" : "Save"}
               </button>
             </div>
 
@@ -377,7 +262,10 @@ const ServiceDetail = () => {
                     key={values.imageLink}
                     src={values.imageLink}
                     alt="Service preview"
-                    style={{ ...styles.previewImg, opacity: imgOk ? 1 : 0 }}
+                    style={{
+                      ...styles.previewImg,
+                      opacity: imgOk ? 1 : 0,
+                    }}
                     onLoad={() => setImgOk(true)}
                     onError={() => setImgOk(false)}
                     referrerPolicy="no-referrer"
@@ -402,7 +290,7 @@ const ServiceDetail = () => {
   );
 };
 
-/* ---------- Small presentational helpers ---------- */
+/* ---------- Presentational helpers ---------- */
 function Field({ label, hint, error, required, compact, children }) {
   return (
     <div style={{ ...styles.field, ...(compact ? styles.fieldCompact : {}) }}>
@@ -416,7 +304,7 @@ function Field({ label, hint, error, required, compact, children }) {
   );
 }
 
-/* ---------- Styles (no Tailwind—styles only) ---------- */
+/* ---------- Styles (no Tailwind, styles only) ---------- */
 const styles = {
   page: {
     minHeight: "100vh",
@@ -427,8 +315,9 @@ const styles = {
     alignItems: "flex-start",
     fontFamily:
       "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-    color: "#0f172a",
+    color: "black",
     minWidth : '100vw'
+    
   },
   card: {
     width: "100%",
@@ -530,17 +419,6 @@ const styles = {
     cursor: "not-allowed",
     boxShadow: "none",
   },
-  buttonSecondary: {
-    border: "1px solid #e2e8f0",
-    background: "#fff",
-    color: "#0f172a",
-    fontWeight: 600,
-    borderRadius: 12,
-    padding: "12px 18px",
-    fontSize: 14,
-    cursor: "pointer",
-    transition: "background 120ms ease, box-shadow 120ms ease",
-  },
   previewCard: {
     border: "1px solid #e2e8f0",
     borderRadius: 14,
@@ -582,43 +460,24 @@ const styles = {
     background:
       "repeating-linear-gradient(45deg, #f8fafc, #f8fafc 10px, #fafafa 10px, #fafafa 20px)",
   },
-
-  /* Skeletons */
-  skeletonTitle: {
-    width: 240,
-    height: 28,
-    borderRadius: 8,
-    background:
-      "linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%)",
-    backgroundSize: "400% 100%",
-    animation: "shine 1.2s linear infinite",
-  },
-  skeletonLabel: {
-    width: 120,
-    height: 12,
-    borderRadius: 6,
-    background:
-      "linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%)",
-    backgroundSize: "400% 100%",
-    animation: "shine 1.2s linear infinite",
-  },
-  skeletonInput: {
-    height: 44,
+  inlineNote: {
+    marginTop: 16,
+    padding: "10px 12px",
+    border: "1px solid #fde68a",
+    background: "#fffbeb",
+    color: "#92400e",
     borderRadius: 10,
-    background:
-      "linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%)",
-    backgroundSize: "400% 100%",
-    animation: "shine 1.2s linear infinite",
+    fontSize: 13,
   },
-  skeletonPreview: {
-    height: 240,
-    borderRadius: 12,
-    background:
-      "linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%)",
-    backgroundSize: "400% 100%",
-    animation: "shine 1.2s linear infinite",
-    marginTop: 12,
+  submitError: {
+    marginTop: 8,
+    padding: "10px 12px",
+    border: "1px solid #fecaca",
+    background: "#fef2f2",
+    color: "#991b1b",
+    borderRadius: 10,
+    fontSize: 13,
   },
 };
 
-export default ServiceDetail;
+export default AddService;

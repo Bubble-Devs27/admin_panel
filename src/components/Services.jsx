@@ -93,7 +93,9 @@ const Services = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>App Services</h1>
+      <div style = {styles.upper}><h1 style={styles.heading}>App Services</h1> 
+      <button style = {styles.add} onClick={()=>{navigate(`/addService`)}}>Add</button>
+      </div>
       {Array.isArray(services) && services.length > 0 ? (
         services.map((service) => {
           const id = service._id || service.serviceID;
@@ -169,6 +171,18 @@ const styles = {
     fontWeight: 600,
     marginBottom: 16,
     color: "#111827",
+  },
+  upper :{
+    display :'flex',
+     justifyContent :'space-between',
+    alignItems :'center'
+  },
+  add :{
+    backgroundColor :'white',
+    borderColor :'grey',
+    borderRadius :12,
+    borderWidth :1,
+    color :'black'
   },
   card: {
     display: "flex",
