@@ -7,8 +7,8 @@ export const useAuth = create(
       token: null,
       details: null,
       setAuth: ({ token, details }) => set({ token, details }),
-      clearAuth: () => set({ token: null, details: null }),
-      baseURL : 'https://apps-backend-114i.onrender.com/api/v1'
+      clearAuth: () => set({ token: null, details: null  }),
+      baseURL : prod
     }),
     { name: "auth-store" } // localStorage key
   )

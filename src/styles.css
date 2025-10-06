@@ -1,9 +1,9 @@
 :root {
-  --bg: #0b0f1a;
+  --bg: white;
   --card: rgba(187, 187, 187, 0.08);
   --border: rgba(152, 149, 149, 0.14);
   --text: #eaf0ff;
-  --muted: #a8b3cf;
+  --muted: #6c85c4;
   --accent: #6d8cff;
   --accent-2: #9aa9ff;
   --danger: #ff6b6b;
@@ -12,9 +12,9 @@
 * { box-sizing: border-box; }
 
 html, body, #root { height: 100%; }
-body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background: radial-gradient(1200px 600px at 70% -10%, #172036, #0b0f1a); color: var(--text); }
+body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;  color: var(--text); background-color: white; }
 
-.center-wrap, .auth-shell { height: 100%; display: grid; place-items: center; padding: 24px; }
+.center-wrap, .auth-shell { height: 100%; display: grid; place-items: center; padding: 24px;  width: 100vw;}
 
 .spinner {
   width: 32px; height: 32px; border-radius: 999px;
@@ -31,7 +31,7 @@ body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI
   box-shadow: 0 10px 50px rgba(0,0,0,0.35);
 }
 
-.title { margin: 0 0 6px; font-size: 24px; font-weight: 800; letter-spacing: 0.2px; }
+.title { margin: 0 0 6px; font-size: 24px; font-weight: 800; letter-spacing: 0.2px; color: #5f7cc7 }
 .subtitle { margin: 0 0 18px; color: var(--muted); }
 
 .form { display: grid; gap: 10px; }
