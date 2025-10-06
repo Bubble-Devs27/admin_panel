@@ -1,14 +1,15 @@
 // ServiceDetail.jsx
+import axios from "axios";
 import { color } from "framer-motion";
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
-const baseURL =  "http://localhost:3000/api/v1";
+import { useAuth } from "../store/auth";
+ 
 
 const ServiceDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const baseURL = useAuth((s)=>s.baseURL)
   const [values, setValues] = useState({
     name: "",
     imageLink: "",
@@ -145,7 +146,7 @@ const ServiceDetail = () => {
 
       const payload = {
         name: values.name.trim(),
-        imageLink: values.imageLink.trim(),
+        image: values.imageLink.trim(),
         serviceID: values.serviceID.trim(),
         location: values.location.trim(),
         prices: {
@@ -154,17 +155,15 @@ const ServiceDetail = () => {
           large: Number(values.priceLarge),
         },
       };
-
-      // TODO: Replace with your real API endpoint to update the service
-      // Example:
-      // const res = await fetch(`${baseURL}/update-service-by-id/${id}`, {
-      //   method: "PUT",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(payload),
-      // });
-      // if (!res.ok) throw new Error(`Update failed: ${res.status}`);
-      console.log("Saving updated service:", { id, payload });
-      alert("Changes saved! (Check console for payload)");
+      const response = await axios.post(`${baseURL}/update-service-by-id` , {id , payload})
+      if(response.status ==200){
+        alert(response.data.message)
+        navigate("/home")
+      }
+      else {
+        alert("error" , response.data.message)
+      }
+  
     } catch (err) {
       setSubmitError(err?.message || "Something went wrong while saving.");
     } finally {

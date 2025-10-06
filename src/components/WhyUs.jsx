@@ -39,13 +39,13 @@ const WhyUs = () => {
       <div style={styles.wrap}>
         <div style={styles.headerRow}>
           <h2 style={styles.title}>Why Us</h2>
-          <button
-            style={styles.addBtn}
-            onClick={onCreateClick}
-            aria-label="Add new Why Us"
-          >
-            +
-          </button>
+          <div
+          style={styles.addBtn}
+          onClick={onCreateClick}
+          aria-label="Add new Why Us"
+        >
+          Add
+        </div>
         </div>
         <div style={styles.grid}>
           {Array.from({ length: 6 }).map((_, i) => (
@@ -79,13 +79,13 @@ const WhyUs = () => {
       <div style={styles.wrap}>
         <div style={styles.headerRow}>
           <h2 style={styles.title}>Why Us</h2>
-          <button
-            style={styles.addBtn}
-            onClick={onCreateClick}
-            aria-label="Add new Why Us"
-          >
-            +
-          </button>
+           <div
+          style={styles.addBtn}
+          onClick={onCreateClick}
+          aria-label="Add new Why Us"
+        >
+          Add
+        </div>
         </div>
         <div style={styles.emptyBox}>No items to display.</div>
       </div>
