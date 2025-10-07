@@ -41,7 +41,7 @@ body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI
   border: 1px solid var(--border); outline: none; background: rgba(255,255,255,0.04);
   color: var(--text);
 }
-.input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(109,140,255,0.15); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(109,140,255,0.15); color: rgb(109, 141, 255); font-weight:  bold; }
 
 .btn {
   margin-top: 6px; width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid transparent;

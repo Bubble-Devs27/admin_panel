@@ -40,21 +40,23 @@ export default function WhyUsDetail() {
     })();
     return () => { isMounted = false; };
   }, [baseURL, id]);
- const update = async() =>{
+
+  const update = async() => {
     try { 
-        const response = await axios.post(`${baseURL}/update-whyus` , {_id : id , title : title , image : image})
-        console.log(response.status)
-        if(response.status == 200){
+        const response = await axios.post(`${baseURL}/update-whyus`, {_id : id , title : title , image : image})
+        console.log(response.status);
+        if(response.status === 200){
             navigate("/home");
         }
         else {
-            alert(response.data.message)
+            alert(response.data.message);
         }
     } 
     catch(err){
-        console.log(err)
+        console.log(err);
     }
- }
+  };
+
   const openModal = () => {
     setTempImageUrl(image || "");
     setIsModalOpen(true);
@@ -65,10 +67,8 @@ export default function WhyUsDetail() {
     setIsModalOpen(false);
   };
 
-  // NOTE: You only asked to navigate back on save. If you later want to persist:
-  // await axios.put(`${baseURL}/update-whyUs/${id}`, { title, image })
   const onSave = async () => {
-   update();
+    update();
   };
 
   if (loading) {
@@ -161,7 +161,7 @@ export default function WhyUsDetail() {
           <div style={styles.modalCard}>
             <div style={styles.modalHeader}>
               <div style={styles.modalTitle}>Update Image</div>
-              <button style={styles.modalClose} onClick={closeModal} aria-label="Close">×</button>
+              
             </div>
             <div style={styles.modalBody}>
               <label style={styles.label} htmlFor="image-url-input">Image URL</label>
@@ -198,75 +198,67 @@ export default function WhyUsDetail() {
   );
 }
 
-/* ===== Inline Styles ===== */
-const surface = "rgba(255,255,255,0.06)";
-const border = "1px solid rgba(255,255,255,0.14)";
+/* ===== Updated Styles ===== */
 
 const styles = {
   page: {
     minHeight: "100vh",
-    width: "100%",
-    background:
-      "radial-gradient(1200px 600px at 10% -10%, rgba(255,255,255,0.05), rgba(0,0,0,0))",
-    color: "#eaeaea",
-    fontFamily:
-      'Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans"',
+    width: "100vw",
+    backgroundColor: "#f5f5f5", // White background for a modern look
+    color: "#333",
+    fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans"',
     display: "flex",
-    flexDirection: "column",
-    
-    
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "20px",
+    flexDirection :'column'
   },
   container: {
-    maxWidth: 980,
-    margin: "0 auto",
-    padding: "24px 20px 120px",
-    
+    width: "100%",
+    maxWidth: 850,
+    backgroundColor: "#fff", // White background for the container
+    borderRadius: 12,
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+    padding: "30px",
+    display: "flex",
+    flexDirection: "column",
   },
   headerRow: {
     display: "flex",
-    alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 18,
+    alignItems: "center",
+    marginBottom: 24,
   },
   pageTitle: {
-    margin: 0,
-    fontSize: 22,
-    fontWeight: 700,
-    letterSpacing: 0.3,
+    fontSize: 24,
+    fontWeight: 600,
+    color: "#333",
   },
-
   contentRow: {
     display: "grid",
-    gridTemplateColumns: "minmax(260px, 380px) 1fr",
-    gap: 22,
-    alignItems: "start",
+    gridTemplateColumns: "1fr 2fr",
+    gap: 20,
+    alignItems: "center",
   },
-
-  /* Image Card */
   imageCard: {
     position: "relative",
-    background: surface,
-    border,
-    borderRadius: 16,
+    background: "#eaeaea", // Subtle background for the image area
+    borderRadius: 8,
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     overflow: "hidden",
-    boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
-    backdropFilter: "blur(8px)",
-    WebkitBackdropFilter: "blur(8px)",
   },
   imageWrap: {
     width: "100%",
-    height: 260,
-    background: "rgba(255,255,255,0.04)",
+    height: 200,
+    background: "#f0f0f0", // Placeholder background
     display: "flex",
-    alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
+    alignItems: "center",
   },
   image: {
     width: "100%",
     height: "100%",
     objectFit: "cover",
-    display: "block",
   },
   imagePlaceholder: {
     color: "#bbb",
@@ -276,183 +268,91 @@ const styles = {
     position: "absolute",
     top: 10,
     right: 10,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    border: "1px solid rgba(255,255,255,0.18)",
-    background: "rgba(0,0,0,0.35)",
+    padding: "8px",
+    background: "#007bff",
     color: "#fff",
-    fontSize: 18,
-    lineHeight: "34px",
-    textAlign: "center",
+    fontSize: 14,
+    borderRadius: 6,
+    border: "none",
     cursor: "pointer",
-    backdropFilter: "blur(6px)",
-    WebkitBackdropFilter: "blur(6px)",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+    transition: "background 0.3s",
   },
-
-  /* Right side form */
   formArea: {
-    background: surface,
-    border,
-    borderRadius: 16,
-    padding: 16,
-    boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
-    backdropFilter: "blur(8px)",
-    WebkitBackdropFilter: "blur(8px)",
+    display: "flex",
+    flexDirection: "column",
   },
   label: {
-    fontSize: 12,
-    opacity: 0.8,
+    fontSize: 14,
+    fontWeight: 600,
     marginBottom: 8,
   },
   input: {
-    width: "100%",
-    padding: "10px 12px",
+    padding: "12px 16px",
     fontSize: 14,
-    borderRadius: 10,
-    border: "1px solid rgba(255,255,255,0.22)",
-    background: "rgba(255,255,255,0.08)",
-    color: "#fff",
+    borderRadius: 8,
+    border: "1px solid #ddd",
+    marginBottom: 16,
     outline: "none",
+    backgroundColor: "#fafafa",
+    color: "#333",
   },
-
-  /* Footer (Save) */
   footerBar: {
-    position: "sticky",
-    bottom: 0,
-    width: "100%",
-    padding: "12px 20px",
-    background: "rgba(10,10,10,0.65)",
-    borderTop: "1px solid rgba(255,255,255,0.15)",
-    backdropFilter: "blur(8px)",
-    WebkitBackdropFilter: "blur(8px)",
+    marginTop: 30,
     display: "flex",
     justifyContent: "flex-end",
-    gap: 10,
+    gap: 20,
   },
   btn: {
-    padding: "10px 16px",
+    padding: "10px 20px",
     fontSize: 14,
     fontWeight: 600,
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.14)",
+    borderRadius: 8,
+    border: "none",
+    backgroundColor: "#007bff",
     color: "#fff",
     cursor: "pointer",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
-  },
-  btnDisabled: {
-    opacity: 0.6,
-    cursor: "not-allowed",
+    transition: "background 0.3s",
   },
   btnSecondary: {
-    padding: "10px 16px",
+    padding: "10px 20px",
     fontSize: 14,
     fontWeight: 600,
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.18)",
-    background: "rgba(255,255,255,0.06)",
-    color: "#fff",
+    borderRadius: 8,
+    border: "1px solid #007bff",
+    backgroundColor: "transparent",
+    color: "#007bff",
     cursor: "pointer",
+    transition: "background 0.3s",
   },
-
-  /* Modal */
   modalOverlay: {
     position: "fixed",
     inset: 0,
     background: "rgba(0,0,0,0.5)",
     display: "flex",
-    alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-    zIndex: 50,
+    alignItems: "center",
   },
   modalCard: {
-    width: "100%",
-    maxWidth: 520,
-    background: "rgba(20,20,20,0.9)",
-    border: "1px solid rgba(255,255,255,0.14)",
-    borderRadius: 16,
-    boxShadow: "0 10px 30px rgba(0,0,0,0.45)",
-    color: "#eaeaea",
-    overflow: "hidden",
+    background: "#fff",
+    padding: 20,
+    width: "80%",
+    maxWidth: 500,
+    borderRadius: 8,
+    boxShadow: "0 6px 12px rgba(0,0,0,0.1)",
   },
-  modalHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "14px 16px",
-    borderBottom: "1px solid rgba(255,255,255,0.12)",
-  },
-  modalTitle: { fontSize: 16, fontWeight: 700 },
   modalClose: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    border: "1px solid rgba(255,255,255,0.18)",
-    background: "rgba(255,255,255,0.06)",
-    color: "#fff",
-    fontSize: 18,
-    lineHeight: "30px",
-    textAlign: "center",
+    background: "transparent",
+    border: "none",
+    fontSize: 20,
+    color: "#999",
     cursor: "pointer",
-  },
-  modalBody: {
-    padding: 16,
-  },
-  previewWrap: { marginTop: 12 },
-  previewLabel: { fontSize: 12, opacity: 0.8, marginBottom: 8 },
-  previewBox: {
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: "rgba(255,255,255,0.04)",
-    overflow: "hidden",
-    height: 180,
-  },
-  previewImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    display: "block",
+    transition: "color 0.3s",
   },
   modalFooter: {
-    padding: 12,
     display: "flex",
     justifyContent: "flex-end",
     gap: 10,
-    borderTop: "1px solid rgba(255,255,255,0.12)",
-  },
-
-  /* Loaders */
-  titleSkeleton: {
-    width: 180,
-    height: 24,
-    borderRadius: 8,
-    background: "rgba(255,255,255,0.09)",
-  },
-  imageSkeleton: {
-    width: "100%",
-    height: 260,
-    borderRadius: 16,
-    background: "rgba(255,255,255,0.08)",
-    border: "1px solid rgba(255,255,255,0.12)",
-  },
-  inputSkeleton: {
-    width: "100%",
-    height: 40,
-    borderRadius: 10,
-    background: "rgba(255,255,255,0.08)",
-    border: "1px solid rgba(255,255,255,0.12)",
-  },
-
-  /* Errors */
-  errorBox: {
-    marginTop: 24,
-    padding: 18,
-    borderRadius: 12,
-    border: "1px solid rgba(255,86,86,0.4)",
-    background: "rgba(255,86,86,0.08)",
-    color: "#ffb0b0",
+    marginTop: 16,
   },
 };
+

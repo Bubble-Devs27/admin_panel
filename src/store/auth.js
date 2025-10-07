@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 const prod = "https://apps-backend-114i.onrender.com/api/v1"
+const local = "http://localhost:3000/api/v1"
 export const useAuth = create(
   persist(
     (set) => ({

@@ -36,8 +36,8 @@ export default function Login() {
   return (
     <div className="auth-shell">
       <div className="card">
-        <h1 className="title">Welcome back</h1>
-        <p className="subtitle">Sign in to continue</p>
+        <h1 className="title">Bubblex</h1>
+        <p className="subtitle">Admin Panel</p>
 
         <form onSubmit={handleSubmit} className="form">
           <label className="label">Username</label>
