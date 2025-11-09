@@ -10,7 +10,7 @@ export const useAuth = create(
       details: null,
       setAuth: ({ token, details }) => set({ token, details }),
       clearAuth: () => set({ token: null, details: null  }),
-      baseURL : pc
+      baseURL : prod
     }),
     { name: "auth-store" } // localStorage key
   )
