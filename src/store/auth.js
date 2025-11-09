@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 const prod = "https://apps-backend-114i.onrender.com/api/v1"
 const local = "http://localhost:3000/api/v1"
+const pc = "http://192.168.29.171:3000/api/v1"
 export const useAuth = create(
   persist(
     (set) => ({
@@ -9,7 +10,7 @@ export const useAuth = create(
       details: null,
       setAuth: ({ token, details }) => set({ token, details }),
       clearAuth: () => set({ token: null, details: null  }),
-      baseURL : prod
+      baseURL : pc
     }),
     { name: "auth-store" } // localStorage key
   )

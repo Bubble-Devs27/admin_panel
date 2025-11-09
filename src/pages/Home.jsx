@@ -4,6 +4,8 @@ import { useAuth } from "../store/auth.js"; // remove or adjust if not using zus
 import WhyUs from "../components/WhyUs.jsx";
 import Services from "../components/Services.jsx";
 import Review from "../components/Review.jsx";
+import Packages from "../components/Packages.js";
+import { label } from "framer-motion/client";
 
 // Single-file React page with LEFT tab bar (inline CSS, no Tailwind)
 
@@ -11,6 +13,7 @@ const TABS = [
   { key: "whyus", label: "Whyus" },
   { key: "services", label: "Services" },
   { key: "review", label: "Review" },
+  {key : "packages" , label : "Packages"}
 ];
 
 export default function HomeInline() {
@@ -85,6 +88,7 @@ export default function HomeInline() {
             {active === "whyus" && <WhyUs />}
             {active === "services" && <Services />}
             {active === "review" && <Review />}
+            {active == "packages" && <Packages/>}
           </div>
         </section>
       </main>
